@@ -1,3 +1,14 @@
+<?php
+	session_start();
+			if(!isset($_SESSION["Student_id"])){ // if "user" not set,
+			session_destroy();
+			header('Location: login.php');     // go to login page
+		
+		exit;
+		}
+		$sessionid = $_SESSION['Student_id'];
+	include database.php;
+?>
 <?php 
 	
 	require 'database.php';
@@ -8,12 +19,14 @@
 		$coursenumberError = null;
 		$coursetitleError = null;
 		$courserequisiteError = null;
+		$creditsError = null;
 		
 		//keep track post values
 		$line_number = $_POST['line_number'];
 		$coursenumber = $_POST['course_number'];
 		$coursetitle = $_POST['course_title'];
 		$courserequisite = $_POST['course_requisite'];
+		$credits= $_POST['credits'];
 		
 		// validate input 
 			$valid = true;
@@ -36,14 +49,18 @@
 			$courserequisiteError = 'Please enter course requisite';
 			$valid = false;
 		}
+		if (empty($credits)) {
+			$creditsError = 'Please enter Number of Credits';
+			$valid = false;
+		}
 		
 		// insert data
 		if ($valid) {
 			$pdo = Database::connect();
 			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$sql = "INSERT INTO courses_needed (line_number,course_number,course_title,course_requisite) values(?, ?, ?, ?)";
+			$sql = "INSERT INTO courses_needed (line_number,course_number,course_title,course_requisite,credits) values(?, ?, ?, ?, ?)";
 			$q = $pdo->prepare($sql);
-			$q->execute(array($line_number,$coursenumber,$coursetitle,$courserequisite));
+			$q->execute(array($line_number,$coursenumber,$coursetitle,$courserequisite,$credits));
 			Database::disconnect();
 			header("Location: courses_needed.php");
 		}
@@ -59,7 +76,7 @@
     <script src="js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body background="http://www.designbolts.com/wp-content/uploads/2012/12/White-Gradient-Squares-Seamless-Patterns-For-Website-Backgrounds.jpg">
     <div class="container">
     
     			<div class="span10 offset1">
@@ -72,7 +89,7 @@
 					  <div class="control-group <?php echo !empty($line_numberError)?'error':'';?>">
 					    <label class="control-label">line number</label>
 					    <div class="controls">
-					      	<input name="line_number" type="text"  placeholder="Student id" value="<?php echo !empty($line_number)?$line_number:'';?>">
+					      	<input name="line_number" type="text"  placeholder="Line number" value="<?php echo !empty($line_number)?$line_number:'';?>">
 					      	<?php if (!empty($line_numberError)): ?>
 					      		<span class="help-inline"><?php echo $line_numberError;?></span>
 					      	<?php endif; ?>
@@ -112,10 +129,20 @@
 					    </div>
 					  </div>
 					  
+					    <div class="control-group <?php echo !empty($creditsError)?'error':'';?>">
+					    <label class="control-label">Credits </label>
+					    <div class="controls">
+					      	<input name="credits" type="text"  placeholder="credits" value="<?php echo !empty($credits)?$credits:'';?>">
+					      	<?php if (!empty($creditsError)): ?>
+					      		<span class="help-inline"><?php echo $creditsError;?></span>
+					      	<?php endif;?>
+					    </div>
+					  </div>
+					  
 					  
 					  <div class="form-actions">
 						  <button type="submit" class="btn btn-success">Create</button>
-						  <a class="btn" href="student.php">Back</a>
+						  <a class="btn" href="courses_needed.php">Back</a>
 						</div>
 					</form>
 				</div>

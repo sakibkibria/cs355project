@@ -1,3 +1,14 @@
+<?php
+	session_start();
+			if(!isset($_SESSION["Student_id"])){ // if "user" not set,
+			session_destroy();
+			header('Location: login.php');     // go to login page
+		
+		exit;
+		}
+		$sessionid = $_SESSION['Student_id'];
+	include database.php;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +17,7 @@
     <script src="js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body background="http://www.designbolts.com/wp-content/uploads/2012/12/White-Gradient-Squares-Seamless-Patterns-For-Website-Backgrounds.jpg">
     <div class="container">
     		<div class="row">
     			<h3>Courses Needed</h3>
@@ -15,6 +26,9 @@
 				<p>
 					<a href="courses_needed_create.php" class="btn btn-success">Create</a>
 				</p>
+					<a href="home.html"><button class="btn btn-info">Home</button></a>
+				<a href="logout.php"><button class="btn btn-danger">Log Out</button></a>	
+				
 				
 				
 				<table class="table table-striped table-bordered">

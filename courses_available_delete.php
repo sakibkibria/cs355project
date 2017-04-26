@@ -1,3 +1,14 @@
+<?php
+	session_start();
+			if(!isset($_SESSION["Student_id"])){ // if "user" not set,
+			session_destroy();
+			header('Location: login.php');     // go to login page
+		
+		exit;
+		}
+		$sessionid = $_SESSION['Student_id'];
+	include database.php;
+?>
 <?php 
 	require 'database.php';
 	$line_number = 0;
@@ -13,11 +24,11 @@
 		// delete data
 		$pdo = Database::connect();
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$sql = "DELETE FROM courses_needed WHERE line_number = ?";
+		$sql = "DELETE FROM courses_available WHERE line_number = ?";
 		$q = $pdo->prepare($sql);
 		$q->execute(array($line_number));
 		Database::disconnect();
-		header("Location: courses_needed.php");
+		header("Location: courses_available.php");
 		
 	} 
 ?>
@@ -30,7 +41,7 @@
     <script src="js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body background="http://www.designbolts.com/wp-content/uploads/2012/12/White-Gradient-Squares-Seamless-Patterns-For-Website-Backgrounds.jpg">
     <div class="container">
     
     			<div class="span10 offset1">
@@ -38,12 +49,12 @@
 		    			<h3>Delete a course</h3>
 		    		</div>
 		  
-	    			<form class="form-horizontal" action="courses_needed_delete.php" method="post">
+	    			<form class="form-horizontal" action="courses_available_delete.php" method="post">
 	    			  <input type="hidden" name="line_number" value="<?php echo $line_number;?>"/>
 					  <p class="alert alert-error">Are you sure to delete ?</p>
 					  <div class="form-actions">
 						  <button type="submit" class="btn btn-danger">Yes</button>
-						  <a class="btn" href="courses_needed.php">No</a>
+						  <a class="btn" href="courses_available.php">No</a>
 						</div>
 					</form>
 				</div>

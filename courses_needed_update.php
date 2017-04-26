@@ -1,3 +1,14 @@
+<?php
+	session_start();
+			if(!isset($_SESSION["Student_id"])){ // if "user" not set,
+			session_destroy();
+			header('Location: login.php');     // go to login page
+		
+		exit;
+		}
+		$sessionid = $_SESSION['Student_id'];
+	include database.php;
+?>
 <?php 
 	
 	require 'database.php';
@@ -39,7 +50,7 @@
 			$mobileError = 'Please enter course requisite';
 			$valid = false;
 		}
-		if (empty($courserequisite)) {
+		if (empty($credits)) {
 			$creditsError = 'Please enter number of credits ';
 			$valid = false;
 		}
@@ -77,7 +88,7 @@
     <script src="js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body background="http://www.designbolts.com/wp-content/uploads/2012/12/White-Gradient-Squares-Seamless-Patterns-For-Website-Backgrounds.jpg">
     <div class="container">
     
     			<div class="span10 offset1">

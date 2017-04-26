@@ -72,7 +72,7 @@
     <script src="js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body background="http://www.designbolts.com/wp-content/uploads/2012/12/White-Gradient-Squares-Seamless-Patterns-For-Website-Backgrounds.jpg">
     <div class="container">
     
     			<div class="span10 offset1">

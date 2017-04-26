@@ -1,20 +1,37 @@
+<?php
+	session_start();
+			if(!isset($_SESSION["Student_id"])){ // if "user" not set,
+			session_destroy();
+			header('Location: login.php');     // go to login page
+		
+		exit;
+		}
+		$sessionid = $_SESSION['Student_id'];
+	include database.php;
+?>
 <?php 
 	
 	require 'database.php';
 
 	if ( !empty($_POST)) {
-		//keep track validation errors
+		// keep track validation errors
 		$line_numberError = null;
 		$coursenumberError = null;
 		$coursetitleError = null;
 		$courserequisiteError = null;
+		$facultyError = null;
+		$creditsError = null;
+		$semesterError = null;
 		
-		//keep track post values
+		
+		// keep track post values
 		$line_number = $_POST['line_number'];
 		$coursenumber = $_POST['course_number'];
-		$coursetitle = $_POST['course_title'];
+		$coursetitle= $_POST['course_title'];
 		$courserequisite = $_POST['course_requisite'];
-		
+		$faculty = $_POST['faculty'];
+		$credits = $_POST['credits'];
+		$semester = $_POST['semester'];
 		// validate input 
 			$valid = true;
 		if (empty($line_number)) {
@@ -37,15 +54,29 @@
 			$valid = false;
 		}
 		
+     	if (empty($faculty)) {
+			$facultyError = 'Please enter name of Faculty ';
+			$valid = false;
+		}
+		
+		if (empty($credits)) {
+			$creditsError = 'Please enter number of credits ';
+			$valid = false;
+		}
+		
+		if (empty($semester)) {
+			$semesterError = 'Please enter the semester with year ';
+			$valid = false;
+		}
 		// insert data
 		if ($valid) {
 			$pdo = Database::connect();
 			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$sql = "INSERT INTO courses_needed (line_number,course_number,course_title,course_requisite) values(?, ?, ?, ?)";
+			$sql = "INSERT INTO courses_available (line_number,course_number,course_title,course_requisite,faculty,credits,semester) values(?, ?, ?, ?, ?, ?, ?)";
 			$q = $pdo->prepare($sql);
-			$q->execute(array($line_number,$coursenumber,$coursetitle,$courserequisite));
+			$q->execute(array($line_number,$coursenumber,$coursetitle,$courserequisite,$faculty,$credits,$semester));
 			Database::disconnect();
-			header("Location: courses_needed.php");
+			header("Location: courses_available.php");
 		}
 	}
 ?>
@@ -59,7 +90,7 @@
     <script src="js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body background="http://www.designbolts.com/wp-content/uploads/2012/12/White-Gradient-Squares-Seamless-Patterns-For-Website-Backgrounds.jpg">
     <div class="container">
     
     			<div class="span10 offset1">
@@ -68,11 +99,11 @@
 		    		</div>
 					
     		
-	    			<form class="form-horizontal" action="courses_needed_create.php" method="post">
+	    			<form class="form-horizontal" action="courses_available_create.php" method="post">
 					  <div class="control-group <?php echo !empty($line_numberError)?'error':'';?>">
 					    <label class="control-label">line number</label>
 					    <div class="controls">
-					      	<input name="line_number" type="text"  placeholder="Student id" value="<?php echo !empty($line_number)?$line_number:'';?>">
+					      	<input name="line_number" type="text"  placeholder="line number" value="<?php echo !empty($line_number)?$line_number:'';?>">
 					      	<?php if (!empty($line_numberError)): ?>
 					      		<span class="help-inline"><?php echo $line_numberError;?></span>
 					      	<?php endif; ?>
@@ -112,10 +143,39 @@
 					    </div>
 					  </div>
 					  
+					     <div class="control-group <?php echo !empty($facultyError)?'error':'';?>">
+					    <label class="control-label">Faculty</label>
+					    <div class="controls">
+					      	<input name="faculty" type="text"  placeholder="faculty" value="<?php echo !empty($faculty)?$faculty:'';?>">
+					      	<?php if (!empty($facultyError)): ?>
+					      		<span class="help-inline"><?php echo $facultyError;?></span>
+					      	<?php endif;?>
+					    </div>
+					  </div>
 					  
+					   <div class="control-group <?php echo !empty($creditsError)?'error':'';?>">
+					    <label class="control-label">Course credits</label>
+					    <div class="controls">
+					      	<input name="credits" type="text"  placeholder="credits" value="<?php echo !empty($credits)?$credits:'';?>">
+					      	<?php if (!empty($creditsError)): ?>
+					      		<span class="help-inline"><?php echo $creditsError;?></span>
+					      	<?php endif;?>
+					    </div>
+					  </div>
+					  
+					  <div class="control-group <?php echo !empty($semesterError)?'error':'';?>">
+					    <label class="control-label">Semester</label>
+					    <div class="controls">
+					      	<input name="semester" type="text"  placeholder="semester" value="<?php echo !empty($semester)?$semester:'';?>">
+					      	<?php if (!empty($semesterError)): ?>
+					      		<span class="help-inline"><?php echo $semesterError;?></span>
+					      	<?php endif;?>
+					    </div>
+					  </div>
+
 					  <div class="form-actions">
 						  <button type="submit" class="btn btn-success">Create</button>
-						  <a class="btn" href="student.php">Back</a>
+						  <a class="btn" href="courses_available.php">Back</a>
 						</div>
 					</form>
 				</div>
